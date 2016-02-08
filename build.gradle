@@ -17,8 +17,11 @@ repositories {
 
 dependencies {
     compile 'ch.qos.logback:logback-classic:+',
-            'com.google.guava:guava:+'
+            'com.google.guava:guava:+',
+            'com.jolbox:bonecp:+',
+            'org.springframework:spring-jdbc:+'
 
+    runtime fileTree(include: ['*.jar'], dir: 'lib')
     testCompile 'junit:junit:+'
 }
 

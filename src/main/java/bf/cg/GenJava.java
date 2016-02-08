@@ -12,27 +12,27 @@ import java.util.stream.Collectors;
 /**
  * Created by Administrator on 2016/2/5.
  */
-public class MappingJava {
+public class GenJava {
 
     static String template = "\n    @Column(name=\"%s_ENC\")\n" +
             "    @LCEncryptionCiphertextField\n" +
             "    private String %sEnc;";
 
     public static void main(String[] args) throws Exception {
-        String baseDir = "z:/lc-common";
-
-        String table = "lc$addr";
-        String className = "LcAddress";
-        String[] columns = {"city", "zip", "street", "street_no"};
+        String baseDir = args[0];
+        String table = args[1];
+        String className =args[2];
+        String[] columns = args[3].split(",");
 
 
         String tableShort = table.split("\\$")[1];
-        String classDescriptor = baseDir + String.format("\\lc-dao\\src\\main\\java\\com\\lendingclub\\data\\domain\\jpa" +
-                "\\%s.java", className);
-        List<String> lines = Files.lines(Paths.get(classDescriptor)).collect(Collectors.toList());
-
+        String classDescriptor = baseDir + String.format("/lc-dao/src/main/java/com/lendingclub/data/domain/jpa" +
+                "/%s.java", className);
+        List<String> lines = Files.lines(Paths.get(classDescriptor)).collect(Collectors.<String>toList());
         String currentColumn = null;
-        PrintWriter pw = new PrintWriter(new FileWriter(classDescriptor + ".bak"));
+		String fileName = classDescriptor + ".bak";
+		System.out.println(fileName);
+		PrintWriter pw = new PrintWriter(new FileWriter(fileName));
         for (String line : lines) {
             for (String column : columns) {
                 if (line.contains("name=\"" + column.toUpperCase()+"\"")) {
@@ -41,7 +41,6 @@ public class MappingJava {
                 }
             }
             pw.println(line);
-            System.out.println(line);
             if (currentColumn != null) {
                 if (line.contains(";")) {
                     String insertedText = String.format(template, currentColumn.toUpperCase(), toProperty(currentColumn));
