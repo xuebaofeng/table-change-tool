@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Baofeng Xue on 2016/2/5.
  */
-public class GenJava {
+public class GenJpa {
 
     static String template = "\n    @Column(name=\"%s_ENC\")\n" +
             "    @LCEncryptionCiphertextField\n" +

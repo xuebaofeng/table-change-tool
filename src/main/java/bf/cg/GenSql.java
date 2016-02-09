@@ -2,7 +2,9 @@ package bf.cg;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,6 @@ public class GenSql extends DbSupport {
         String tableName = Main.getTable();
         String ticketId = Main.getTicket();
         String user = Main.getUserName();
-        String[] columns = Main.getColumns().split(",");
 
         String path = Main.getDdlPath();
         PrintWriter pw = new PrintWriter(path);
@@ -32,8 +33,9 @@ public class GenSql extends DbSupport {
                 "\n" +
                 "ALTER TABLE  %s ADD(", ticketId, tableName, user, ticketId, tableName, tableName)};
 
-//		List<String> list = newJdbcTemplate().queryForList("select COLUMN_NAME from LC_ENC_COLUMN_CONFIG where table_name=?", String.class, tableName);
-        List<String> list = Arrays.asList(columns);
+		List<String> list = newJdbcTemplate().queryForList("select COLUMN_NAME from LC_ENC_COLUMN_CONFIG where table_name=?", String.class, tableName);
+//		String[] columns = Main.getColumns().split(",");
+//        List<String> list = Arrays.asList(columns);
 
         Map<String, Integer> sizeMap = getSizeMap(tableName);
         Map<Integer, Integer> calculateMap = getCalculateMap();
@@ -102,8 +104,8 @@ public class GenSql extends DbSupport {
 
     private static Map<String, Integer> getSizeMap(String tableName) throws Exception {
         Map<String, Integer> sizeMap = new HashMap<>();
-       /* Connection connection = getConnection();
-        ResultSet rslt = connection.createStatement().executeQuery("SELECT * FROM tlc." + tableName);
+		Connection connection = getConnection();
+		ResultSet rslt = connection.createStatement().executeQuery("SELECT * FROM tlc." + tableName);
         ResultSetMetaData rsmd = rslt.getMetaData();
         int noCol = rsmd.getColumnCount();
         String colName = "";
@@ -117,12 +119,8 @@ public class GenSql extends DbSupport {
                 sizeMap.put(colName, colSize);
             }
         }
-        connection.close();*/
-        sizeMap.put("CITY", 100);
-        sizeMap.put("STREET", 200);
-        sizeMap.put("STREET_NO", 300);
-        sizeMap.put("ZIP", 400);
-        return sizeMap;
+		connection.close();
+		return sizeMap;
     }
 
 }
