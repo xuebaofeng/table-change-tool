@@ -4,13 +4,10 @@ import com.google.common.base.CaseFormat;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Created by Administrator on 2016/2/5.
+ * Created by Baofeng Xue on 2016/2/5.
  */
 public class GenJava {
 
@@ -19,23 +16,23 @@ public class GenJava {
             "    private String %sEnc;";
 
     public static void main(String[] args) throws Exception {
-        String baseDir = args[0];
-        String table = args[1];
-        String className =args[2];
-        String[] columns = args[3].split(",");
+        Main.init();
+
+        String baseDir = Main.getBaseDirCommon();
+        String className = Main.getJavaClassName();
+        String[] columns = Main.getColumns().split(",");
 
 
-        String tableShort = table.split("\\$")[1];
-        String classDescriptor = baseDir + String.format("/lc-dao/src/main/java/com/lendingclub/data/domain/jpa" +
+        String inputFile = baseDir + String.format("/lc-dao/src/main/java/com/lendingclub/data/domain/jpa" +
                 "/%s.java", className);
-        List<String> lines = Files.lines(Paths.get(classDescriptor)).collect(Collectors.<String>toList());
+        List<String> lines = Main.readLines(inputFile);
         String currentColumn = null;
-		String fileName = classDescriptor + ".bak";
-		System.out.println(fileName);
-		PrintWriter pw = new PrintWriter(new FileWriter(fileName));
+        String fileName = inputFile + ".bak";
+        System.out.println(fileName);
+        PrintWriter pw = new PrintWriter(new FileWriter(fileName));
         for (String line : lines) {
             for (String column : columns) {
-                if (line.contains("name=\"" + column.toUpperCase()+"\"")) {
+                if (line.contains("name=\"" + column.toUpperCase() + "\"")) {
                     currentColumn = column;
                     pw.print("    @LCEncryptionCleartextField(EncryptionState.TRANSITIONAL)\n");
                 }

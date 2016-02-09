@@ -1,11 +1,7 @@
 package bf.cg;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,100 +13,116 @@ import java.util.stream.Collectors;
  */
 public class GenSql extends DbSupport {
 
+    public static void main(String[] args) throws Exception {
+        Main.init();
+        String tableName = Main.getTable();
+        String ticketId = Main.getTicketDatabase();
+        String user = Main.getUserName();
+        String[] columns = Main.getColumns().split(",");
 
-	/*
-	--liquibase formatted sql
-	--============================================================================
-	-- LMS-62829 add encrypted column for lc$ira_beneficiary
-	--============================================================================
-	--changeset plockwood:LMS-62829_ira_beneficiary
+        String path = Main.getDdlPath();
+        PrintWriter pw = new PrintWriter(path);
+        System.out.println(path);
 
-	ALTER TABLE
-	   LC$IRA_BENEFICIARY
-	ADD(
-	   NAME_ENC VARCHAR2(384 CHAR),
-	   ADDR1_ENC VARCHAR2(768 CHAR),
-	   ADDR2_ENC VARCHAR2(768 CHAR),
-	   CITY_ENC VARCHAR2(384 CHAR),
-	   DOB_ENC VARCHAR2(32 CHAR),
-	   PH_ENC VARCHAR2(128 CHAR),
-	   ZIP_ENC VARCHAR2(32 CHAR));
-
-	--rollback alter table LC$IRA_BENEFICIARY drop (NAME_ENC, ADDR1_ENC, ADDR2_ENC, CITY_ENC, DOB_ENC, PH_ENC, ZIP_ENC);
-	* */
-	public static void main(String[] args) throws Exception {
-		String tableName = args[0];
-		String ticketId = args[1];
-		String user = args[2];
-
-		String path = Main.getBaseDirServices() + "/db/lc/release111/schema_01_encryption_addr.sql";
-		PrintWriter pw = new PrintWriter(path);
-		System.out.println(path);
-
-
-		final String[] addSql = {String.format("--liquibase formatted sql\n" +
-			"--============================================================================\n" +
-			"-- LMS-%s add encrypted columns for %s\n" +
-			"--============================================================================\n" +
-			"--changeset %s:LMS-%s_%s\n" +
-			"\n" +
-			"ALTER TABLE  %s ADD(", ticketId, tableName, user, ticketId, tableName, tableName)};
-
+        final String[] addSql = {String.format("--liquibase formatted sql\n" +
+                "--============================================================================\n" +
+                "-- LMS-%s add encrypted columns for %s\n" +
+                "--============================================================================\n" +
+                "--changeset %s:LMS-%s_%s\n" +
+                "\n" +
+                "ALTER TABLE  %s ADD(", ticketId, tableName, user, ticketId, tableName, tableName)};
 
 //		List<String> list = newJdbcTemplate().queryForList("select COLUMN_NAME from LC_ENC_COLUMN_CONFIG where table_name=?", String.class, tableName);
-		List<String> list = Arrays.asList(new String[]{"CITY", "STREET", "STREET_NO", "ZIP"});
+        List<String> list = Arrays.asList(columns);
 
-		Map<String, Integer> sizeMap = getSizeMap(tableName);
+        Map<String, Integer> sizeMap = getSizeMap(tableName);
+        Map<Integer, Integer> calculateMap = getCalculateMap();
 
+        List<String> lines = list.stream().map(String::toUpperCase).map(columnName -> {
+            int size = sizeMap.get(columnName);
+            return "\n\t" + columnName + "_ENC VARCHAR2(" + calculateMap.get(size) + " CHAR)";
+        }).collect(Collectors.toList());
 
-		List<String> lines = list.stream().map(columnName -> {
-			Double size = sizeMap.get(columnName) * 1.0;
-			size *= 6;
-			return "\n\t" + columnName + "_ENC VARCHAR2(" + size.intValue() + " CHAR)";
-		}).collect(Collectors.toList());
+        String columnClause = String.join(",", lines);
+        addSql[0] += columnClause;
 
-		addSql[0] += String.join(",", lines);
+        addSql[0] += "\n);";
 
-		addSql[0] += "\n);";
+        final String[] rollbackSql = {String.format("\n--rollback alter table %s drop (", tableName)};
 
+        rollbackSql[0] += String.join("_ENC,", list);
+        rollbackSql[0] += "_ENC);";
 
-		final String[] rollbackSql = {String.format("\n--rollback alter table %s drop (", tableName)};
+        pw.println(addSql[0] + rollbackSql[0]);
+        pw.close();
 
+        generateTestSchema(columnClause);
 
-		rollbackSql[0] += String.join("_ENC,", list);
-		rollbackSql[0] += "_ENC);";
+    }
 
-		pw.println(addSql[0] + rollbackSql[0]);
-		pw.close();
+    private static void generateTestSchema(String columnClause) throws FileNotFoundException {
+        String tableName = Main.getTable();
 
+        List<String> lines;
+        String inputFile = Main.getBaseDirCommon() + "/lc-dao/src/test/resources/lc-dao-full-schema.sql";
+        String outputFile = inputFile + ".bak";
+        PrintWriter pw = new PrintWriter(outputFile);
+        System.out.println(outputFile);
+        lines = Main.readLines(inputFile);
+        String tableBegin = String.format("create table %s (", tableName.toUpperCase());
+        boolean tableFound = false;
+        for (String line : lines) {
+            if (line.contains(tableBegin)) {
+                tableFound = true;
+            }
 
-		String fullSchema = Main.getBaseDirCommon()
-		"/lc-dao/src/test/resources/lc-dao-full-schema.sql";
-		List<String> lines = Files.lines(Paths.get(classDescriptor)).collect(Collectors.<String>toList());
+            if (tableFound) {
 
-	}
+                if (line.contains("primary key")) {
+                    pw.println(columnClause + ",");
+                    tableFound = false;
+                }
+            }
 
-	private static Map<String, Integer> getSizeMap(String tableName) throws Exception {
-		Connection connection = getConnection();
-		ResultSet rslt = connection.createStatement().executeQuery("SELECT * FROM tlc." + tableName);
-		ResultSetMetaData rsmd = rslt.getMetaData();
-		int noCol = rsmd.getColumnCount();
-		String colName = "";
-		int colSize = 0;
+            pw.println(line);
 
+        }
+        pw.close();
+    }
 
-		Map<String, Integer> sizeMap = new HashMap<>();
-		if (rslt.next()) {
+    private static Map<Integer, Integer> getCalculateMap() {
+        Map<Integer, Integer> map = new HashMap<>();
+        List<String> lines = Main.readLines("EncryptedFieldSizeCalculator.csv");
+        for (String line : lines) {
+            String[] parts = line.split(",");
+            map.put(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+        }
+        return map;
+    }
 
-			for (int i = 1; i <= noCol; ++i) {
-				colName = rsmd.getColumnName(i);
-				colSize = rsmd.getColumnDisplaySize(i);
-				sizeMap.put(colName, colSize);
-			}
-		}
-		connection.close();
+    private static Map<String, Integer> getSizeMap(String tableName) throws Exception {
+        Map<String, Integer> sizeMap = new HashMap<>();
+       /* Connection connection = getConnection();
+        ResultSet rslt = connection.createStatement().executeQuery("SELECT * FROM tlc." + tableName);
+        ResultSetMetaData rsmd = rslt.getMetaData();
+        int noCol = rsmd.getColumnCount();
+        String colName = "";
+        int colSize = 0;
 
-		return sizeMap;
-	}
+        if (rslt.next()) {
+
+            for (int i = 1; i <= noCol; ++i) {
+                colName = rsmd.getColumnName(i);
+                colSize = rsmd.getColumnDisplaySize(i);
+                sizeMap.put(colName, colSize);
+            }
+        }
+        connection.close();*/
+        sizeMap.put("CITY", 100);
+        sizeMap.put("STREET", 200);
+        sizeMap.put("STREET_NO", 300);
+        sizeMap.put("ZIP", 400);
+        return sizeMap;
+    }
 
 }

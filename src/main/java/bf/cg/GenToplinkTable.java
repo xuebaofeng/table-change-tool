@@ -4,13 +4,10 @@ import com.google.common.base.CaseFormat;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Created by Administrator on 2016/2/5.
+ * Created by Baofeng Xue on 2016/2/5.
  */
 public class GenToplinkTable {
 
@@ -38,15 +35,17 @@ public class GenToplinkTable {
             "      </mapping>";
 
     public static void main(String[] args) throws Exception {
-        String baseDirMain = args[0];
-        String table = args[1];
-        String[] columns = args[2].split(",");
+        Main.init();
+
+        String baseDirMain = Main.getBaseDirServices() + "/lc-main";
+        String table = Main.getTable();
+        String[] columns = Main.getColumns().split(",");
 
 
         String tableShort = table.split("\\$")[1];
         String classDescriptor = baseDirMain + String.format("/toplink/dm/toplink/tlc_tlMap/descriptor/" +
                 "lc.accessDB.tl.TL%s.ClassDescriptor.xml", toCap( tableShort));
-        List<String> lines = Files.lines(Paths.get(classDescriptor)).collect(Collectors.<String>toList());
+        List<String> lines = Main.readLines(classDescriptor);
 
         String currentColumn = null;
 		String fileName = classDescriptor + ".bak";

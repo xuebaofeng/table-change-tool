@@ -1,8 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
 group 'bf.cg'
@@ -23,13 +21,4 @@ dependencies {
 
     runtime fileTree(include: ['*.jar'], dir: 'lib')
     testCompile 'junit:junit:+'
-}
-
-
-idea.project.ipr {
-    withXml { provider ->
-        provider.node.component
-                .find { it.@name == 'VcsDirectoryMappings' }
-                .mapping.@vcs = 'Git'
-    }
 }
