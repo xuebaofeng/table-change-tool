@@ -1,5 +1,7 @@
 package bf.cg;
 
+import com.beust.jcommander.JCommander;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,10 +16,10 @@ public class Main {
 
 
     private static String table;
-    private static String ticketDatabase;
+    private static String ticket;
     private static String userName;
     private static String baseDirServices;
-    private static String baseDirCommon;
+    private static String commonPath;
     private static String javaClassName;
     private static String columns;
     private static String ddlPath;
@@ -25,30 +27,34 @@ public class Main {
     private static boolean inited;
 
     public static void main(String[] args) throws Exception {
-        init();
+        init(args);
 
-        GenSql.main(null);
-        GenJava.main(null);
-        GenToplinkMap.main(null);
-        GenToplinkTable.main(null);
+        GenSql.main(args);
+        GenJava.main(args);
+        GenToplinkMap.main(args);
+        GenToplinkTable.main(args);
     }
 
     public static String getDdlPath() {
         return ddlPath;
     }
 
-    public static void init() {
+    public static void init(String[] args) {
         if (inited) return;
 
         table = "LC$ADDR";
-        ticketDatabase = "63428";
+        ticket = "63428";
         userName = "Baofeng Xue";
         baseDirServices = "z:";
-        baseDirCommon = "z:/lc-common";
+        commonPath = "z:/lc-common";
         javaClassName = "LcAddress";
         columns = "city,zip,street,street_no";
         ddlPath = baseDirServices + "/db/lc/release111/schema_01_encryption_addr.sql";
 
+        Option option = new Option();
+        new JCommander(option, args);
+        table = option.table;
+        commonPath = option.commonPath;
         inited = true;
     }
 
@@ -57,8 +63,8 @@ public class Main {
         return table;
     }
 
-    public static String getTicketDatabase() {
-        return ticketDatabase;
+    public static String getTicket() {
+        return ticket;
     }
 
     public static String getUserName() {
@@ -69,8 +75,8 @@ public class Main {
         return baseDirServices;
     }
 
-    public static String getBaseDirCommon() {
-        return baseDirCommon;
+    public static String getCommonPath() {
+        return commonPath;
     }
 
     public static String getJavaClassName() {

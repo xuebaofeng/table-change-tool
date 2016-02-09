@@ -16,9 +16,9 @@ public class GenJava {
             "    private String %sEnc;";
 
     public static void main(String[] args) throws Exception {
-        Main.init();
+        Main.init(args);
 
-        String baseDir = Main.getBaseDirCommon();
+        String baseDir = Main.getCommonPath();
         String className = Main.getJavaClassName();
         String[] columns = Main.getColumns().split(",");
 

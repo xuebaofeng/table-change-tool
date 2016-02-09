@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public class GenSql extends DbSupport {
 
     public static void main(String[] args) throws Exception {
-        Main.init();
+        Main.init(args);
         String tableName = Main.getTable();
-        String ticketId = Main.getTicketDatabase();
+        String ticketId = Main.getTicket();
         String user = Main.getUserName();
         String[] columns = Main.getColumns().split(",");
 
@@ -64,7 +64,7 @@ public class GenSql extends DbSupport {
         String tableName = Main.getTable();
 
         List<String> lines;
-        String inputFile = Main.getBaseDirCommon() + "/lc-dao/src/test/resources/lc-dao-full-schema.sql";
+        String inputFile = Main.getCommonPath() + "/lc-dao/src/test/resources/lc-dao-full-schema.sql";
         String outputFile = inputFile + ".bak";
         PrintWriter pw = new PrintWriter(outputFile);
         System.out.println(outputFile);

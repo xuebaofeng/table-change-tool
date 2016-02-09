@@ -35,7 +35,7 @@ public class GenToplinkTable {
             "      </mapping>";
 
     public static void main(String[] args) throws Exception {
-        Main.init();
+        Main.init(args);
 
         String baseDirMain = Main.getBaseDirServices() + "/lc-main";
         String table = Main.getTable();
