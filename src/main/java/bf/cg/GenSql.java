@@ -1,6 +1,8 @@
 package bf.cg;
 
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -41,7 +43,7 @@ public class GenSql extends DbSupport {
 		String ticketId = args[1];
 		String user = args[2];
 
-		String path = args[3];
+		String path = Main.getBaseDirServices() + "/db/lc/release111/schema_01_encryption_addr.sql";
 		PrintWriter pw = new PrintWriter(path);
 		System.out.println(path);
 
@@ -80,6 +82,11 @@ public class GenSql extends DbSupport {
 
 		pw.println(addSql[0] + rollbackSql[0]);
 		pw.close();
+
+
+		String fullSchema = Main.getBaseDirCommon()
+		"/lc-dao/src/test/resources/lc-dao-full-schema.sql";
+		List<String> lines = Files.lines(Paths.get(classDescriptor)).collect(Collectors.<String>toList());
 
 	}
 

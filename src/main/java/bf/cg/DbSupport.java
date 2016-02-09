@@ -18,8 +18,14 @@ public class DbSupport {
 
 	static {
 		BoneCPConfig config = new BoneCPConfig();
+		config.setJdbcUrl("jdbc:oracle:thin:@//lcscrubgg.tlcinternal.com:1521/LCSCRUBGG.lendingclub.com");
+//		config.setJdbcUrl("jdbc:oracle:thin:@//lcdev.tlcinternal.com:1521/lcdev.lendingclub.com");
 
 		dataSource = new BoneCPDataSource(config);
+		dataSource.setUsername("lc_bxue");
+		dataSource.setPassword("atera123");
+//		dataSource.setUsername("tlc");
+//		dataSource.setPassword("tlc");
 		dataSource.setDriverClass("oracle.jdbc.OracleDriver");
 	}
 

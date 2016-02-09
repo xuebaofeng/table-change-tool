@@ -23,9 +23,38 @@ public class Main {
 		javaClassName = "LcAddress";
 		columns = "city,zip,street,street_no";
 
-		GenSql.main(new String[]{table, ticketDatabase, userName, baseDirServices + "/db/lc/release111/schema_01_encryption_addr.sql"});
+		GenSql.main(new String[]{table, ticketDatabase, userName,});
 		GenJava.main(new String[]{baseDirCommon, table, javaClassName, columns});
 		GenToplinkMap.main(new String[]{baseDirServices + "/lc-main", table, columns});
 		GenToplinkTable.main(new String[]{baseDirServices + "/lc-main", table, columns});
+	}
+
+
+	public static String getTable() {
+		return table;
+	}
+
+	public static String getTicketDatabase() {
+		return ticketDatabase;
+	}
+
+	public static String getUserName() {
+		return userName;
+	}
+
+	public static String getBaseDirServices() {
+		return baseDirServices;
+	}
+
+	public static String getBaseDirCommon() {
+		return baseDirCommon;
+	}
+
+	public static String getJavaClassName() {
+		return javaClassName;
+	}
+
+	public static String getColumns() {
+		return columns;
 	}
 }
