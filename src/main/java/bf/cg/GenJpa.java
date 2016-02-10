@@ -1,8 +1,5 @@
 package bf.cg;
 
-import com.google.common.base.CaseFormat;
-
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -19,17 +16,15 @@ public class GenJpa {
         Main.init(args);
 
         String baseDir = Main.getCommonPath();
-        String className = Main.getJavaClassName();
+        String className = Main.getJpa();
         String[] columns = Main.getColumns().split(",");
 
 
-        String inputFile = baseDir + String.format("/lc-dao/src/main/java/com/lendingclub/data/domain/jpa" +
-                "/%s.java", className);
+        String inputFile = baseDir + String.format("/lc-dao/src/main/java/com/lendingclub/data/domain/jpa/%s.java", className);
         List<String> lines = Main.readLines(inputFile);
         String currentColumn = null;
-        String fileName = inputFile + ".bak";
-        System.out.println(fileName);
-        PrintWriter pw = new PrintWriter(new FileWriter(fileName));
+        PrintWriter pw = Main.getPrintWriter(inputFile + ".bak");
+
         for (String line : lines) {
             for (String column : columns) {
                 if (line.contains("name=\"" + column.toUpperCase() + "\"")) {
@@ -40,7 +35,7 @@ public class GenJpa {
             pw.println(line);
             if (currentColumn != null) {
                 if (line.contains(";")) {
-                    String insertedText = String.format(template, currentColumn.toUpperCase(), toProperty(currentColumn));
+                    String insertedText = String.format(template, currentColumn.toUpperCase(), Main.toProperty(currentColumn));
                     pw.println(insertedText);
                     currentColumn = null;
                 }
@@ -50,7 +45,4 @@ public class GenJpa {
         pw.close();
     }
 
-    private static String toProperty(String str) {
-        return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
-    }
 }

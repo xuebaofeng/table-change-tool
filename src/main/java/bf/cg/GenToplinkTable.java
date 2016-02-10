@@ -1,6 +1,5 @@
 package bf.cg;
 
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -45,9 +44,7 @@ public class GenToplinkTable {
 		List<String> lines = Main.readLines(classDescriptor);
 
 		String currentColumn = null;
-		String fileName = classDescriptor + ".bak";
-		PrintWriter pw = new PrintWriter(new FileWriter(fileName));
-		System.out.println(fileName);
+		PrintWriter pw = Main.getPrintWriter(classDescriptor + ".bak");
 		for (String line : lines) {
 			for (String column : columns) {
 				if (line.contains(">" + Main.toProperty(column) + "<")) {

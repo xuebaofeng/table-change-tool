@@ -1,6 +1,5 @@
 package bf.cg;
 
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -21,10 +20,7 @@ public class GenTopLinkJava {
 		List<String> lines = Main.readLines(inputFile);
 		String currentColumn = null;
 
-		String fileName = inputFile + ".bak";
-
-		System.out.println(fileName);
-		PrintWriter pw = new PrintWriter(new FileWriter(fileName));
+		PrintWriter pw = Main.getPrintWriter(inputFile + ".bak");
 		for (String line : lines) {
 			for (String column : columns) {
 				if (line.contains(String.format(" %s;", Main.toProperty(column)))) {

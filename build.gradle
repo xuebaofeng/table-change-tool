@@ -24,3 +24,14 @@ dependencies {
     runtime fileTree(include: ['*.jar'], dir: 'lib')
     testCompile 'junit:junit:+'
 }
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version,
+                'Main-Class': 'bf.cg.Main'
+    }
+    baseName = 'g'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

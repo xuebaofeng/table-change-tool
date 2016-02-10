@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,10 @@ public class GenSql extends DbSupport {
         Main.init(args);
         String tableName = Main.getTable();
         String ticketId = Main.getTicket();
-        String user = Main.getUserName();
+        String user = Main.getUsername();
 
         String path = Main.getDdlPath();
-        PrintWriter pw = new PrintWriter(path);
-        System.out.println(path);
+        PrintWriter pw = Main.getPrintWriter(path);
 
         final String[] addSql = {String.format("--liquibase formatted sql\n" +
                 "--============================================================================\n" +
@@ -33,9 +33,8 @@ public class GenSql extends DbSupport {
                 "\n" +
                 "ALTER TABLE  %s ADD(", ticketId, tableName, user, ticketId, tableName, tableName)};
 
-		List<String> list = newJdbcTemplate().queryForList("select COLUMN_NAME from LC_ENC_COLUMN_CONFIG where table_name=?", String.class, tableName);
-//		String[] columns = Main.getColumns().split(",");
-//        List<String> list = Arrays.asList(columns);
+        String[] columns = Main.getColumns().split(",");
+        List<String> list = Arrays.asList(columns);
 
         Map<String, Integer> sizeMap = getSizeMap(tableName);
         Map<Integer, Integer> calculateMap = getCalculateMap();
@@ -67,9 +66,7 @@ public class GenSql extends DbSupport {
 
         List<String> lines;
         String inputFile = Main.getCommonPath() + "/lc-dao/src/test/resources/lc-dao-full-schema.sql";
-        String outputFile = inputFile + ".bak";
-        PrintWriter pw = new PrintWriter(outputFile);
-        System.out.println(outputFile);
+        PrintWriter pw = Main.getPrintWriter(inputFile + ".bak");
         lines = Main.readLines(inputFile);
         String tableBegin = String.format("create table %s (", tableName.toUpperCase());
         boolean tableFound = false;
@@ -104,8 +101,8 @@ public class GenSql extends DbSupport {
 
     private static Map<String, Integer> getSizeMap(String tableName) throws Exception {
         Map<String, Integer> sizeMap = new HashMap<>();
-		Connection connection = getConnection();
-		ResultSet rslt = connection.createStatement().executeQuery("SELECT * FROM tlc." + tableName);
+        Connection connection = getConnection();
+        ResultSet rslt = connection.createStatement().executeQuery("SELECT * FROM tlc." + tableName);
         ResultSetMetaData rsmd = rslt.getMetaData();
         int noCol = rsmd.getColumnCount();
         String colName = "";
@@ -119,8 +116,8 @@ public class GenSql extends DbSupport {
                 sizeMap.put(colName, colSize);
             }
         }
-		connection.close();
-		return sizeMap;
+        connection.close();
+        return sizeMap;
     }
 
 }

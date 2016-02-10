@@ -1,8 +1,5 @@
 package bf.cg;
 
-import com.google.common.base.CaseFormat;
-
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -30,10 +27,8 @@ public class GenToplinkMap {
 
         String nodeBeginMatch = String.format("<opm:field table=\"%s\" name=\"%s\" xsi:type=\"opm:column\"/>", table.toUpperCase(), "%s");
 
+        PrintWriter pw = Main.getPrintWriter(inputFile + ".bak");
 
-        String fileName = inputFile + ".bak";
-        PrintWriter pw = new PrintWriter(new FileWriter(fileName));
-        System.out.println(fileName);
         for (String line : lines) {
             for (String column : columns) {
 
@@ -44,7 +39,7 @@ public class GenToplinkMap {
             pw.println(line);
             if (currentColumn != null) {
                 if (line.contains("</opm:attribute-mapping>")) {
-                    String nodeText = String.format(template_class_des, toProperty(currentColumn), table.toUpperCase(), currentColumn.toUpperCase());
+                    String nodeText = String.format(template_class_des, Main.toProperty(currentColumn), table.toUpperCase(), currentColumn.toUpperCase());
                     pw.println(nodeText);
                     currentColumn = null;
                 }
@@ -52,10 +47,6 @@ public class GenToplinkMap {
         }
 
         pw.close();
-    }
-
-    private static String toProperty(String str) {
-        return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
     }
 
 
