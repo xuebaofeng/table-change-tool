@@ -83,7 +83,7 @@ public class Main {
 		if (option.username != null)
 			username = option.username;
 
-		ddlPath = baseDirServices + "/db/lc/release111/schema_02_encryption_addr.sql";
+		ddlPath = baseDirServices + "/db/lc/release111/schema_01_encryption_" + getShortTableName() + ".sql";
 
 		inited = true;
 	}
