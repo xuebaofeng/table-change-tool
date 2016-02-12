@@ -18,142 +18,143 @@ import java.util.stream.Collectors;
 public class Main {
 
 
-    private static String table;
-    private static String ticket;
-    private static String username;
-    private static String baseDirServices;
-    private static String commonPath;
-    private static String jpa;
-    private static String columns;
-    private static String ddlPath;
+	private static String table;
+	private static String ticket;
+	private static String username;
+	private static String baseDirServices;
+	private static String commonPath;
+	private static String jpa;
+	private static String columns;
+	private static String ddlPath;
 
-    private static boolean inited;
-    private static JCommander jCommander;
+	private static boolean inited;
+	private static JCommander jCommander;
 
-    public static void main(String[] args) throws Exception {
-        init(args);
+	public static void main(String[] args) throws Exception {
+		init(args);
 
-//		GenSql.main(args);
-        GenJpa.main(args);
-        GenToplinkMap.main(args);
-        GenToplinkTable.main(args);
-        GenTopLinkJava.main(args);
-    }
+		GenSql.main(args);
+		GenJpa.main(args);
+		GenToplinkMap.main(args);
+		GenToplinkTable.main(args);
+		GenTopLinkJava.main(args);
+	}
 
-    public static String getDdlPath() {
-        return ddlPath;
-    }
+	public static String getDdlPath() {
+		return ddlPath;
+	}
 
-    public static void init(String[] args) {
-        if (inited) return;
-
-
-        Option option = new Option();
-        jCommander = null;
-        try {
-            jCommander = new JCommander(option);
-            jCommander.parse(args);
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (jCommander != null) {
-                jCommander.usage();
-                System.exit(1);
-            }
-        }
-        table = option.table;
-        commonPath = option.commonPath;
-        String mainPath = option.mainPath;
+	public static void init(String[] args) {
+		if (inited) return;
 
 
-        baseDirServices = mainPath + "/lc-services";
-
-        boolean exists = Paths.get(baseDirServices).toFile().exists();
-        if (!exists) {
-            System.err.println(baseDirServices + " not exists");
-            if (jCommander != null) {
-                jCommander.usage();
-            }
-            System.exit(1);
-        }
-
-        jpa = option.jpa;
-        columns = option.columns;
-        if (option.ticket != null)
-            ticket = option.ticket;
-        if (option.username != null)
-            username = option.username;
-
-        ddlPath = baseDirServices + "/db/lc/release111/schema_01_encryption_addr.sql";
-
-        inited = true;
-    }
+		Option option = new Option();
+		jCommander = null;
+		try {
+			jCommander = new JCommander(option);
+			jCommander.parse(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (jCommander != null) {
+				jCommander.usage();
+				System.exit(1);
+			}
+		}
+		table = option.table.toUpperCase();
+		table = table.replace("_", "$");
+		commonPath = option.commonPath;
+		String mainPath = option.mainPath;
 
 
-    public static String getTable() {
-        return table;
-    }
+		baseDirServices = mainPath + "/lc-services";
 
-    public static String getTicket() {
-        return ticket;
-    }
+		boolean exists = Paths.get(baseDirServices).toFile().exists();
+		if (!exists) {
+			System.err.println(baseDirServices + " not exists");
+			if (jCommander != null) {
+				jCommander.usage();
+			}
+			System.exit(1);
+		}
 
-    public static String getUsername() {
-        return username;
-    }
+		jpa = option.jpa;
+		columns = option.columns.toUpperCase();
+		if (option.ticket != null)
+			ticket = option.ticket;
+		if (option.username != null)
+			username = option.username;
 
-    public static String getBaseDirServices() {
-        return baseDirServices;
-    }
+		ddlPath = baseDirServices + "/db/lc/release111/schema_02_encryption_addr.sql";
 
-    public static String getCommonPath() {
-        return commonPath;
-    }
+		inited = true;
+	}
 
-    public static String getJpa() {
-        return jpa;
-    }
 
-    public static String getColumns() {
-        return columns;
-    }
+	public static String getTable() {
+		return table;
+	}
 
-    static List<String> readLines(String path) {
-        boolean exists = Paths.get(path).toFile().exists();
-        ArrayList<String> ret = new ArrayList<>();
+	public static String getTicket() {
+		return ticket;
+	}
 
-        if (!exists) {
-            System.err.println(path + " not exists");
-            jCommander.usage();
-            return ret;
-        }
-        try {
-            return Files.lines(Paths.get(path)).collect(Collectors.<String>toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
+	public static String getUsername() {
+		return username;
+	}
 
-    static String toProperty(String str) {
-        return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
-    }
+	public static String getBaseDirServices() {
+		return baseDirServices;
+	}
 
-    static String toCap(String str) {
-        return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, str);
-    }
+	public static String getCommonPath() {
+		return commonPath;
+	}
 
-    static String getShortTableName() {
-        return table.split("\\$")[1];
-    }
+	public static String getJpa() {
+		return jpa;
+	}
 
-    static String getShortCapTableName() {
-        return toCap(getShortTableName());
-    }
+	public static String getColumns() {
+		return columns;
+	}
 
-    static PrintWriter getPrintWriter(String path) throws FileNotFoundException {
-        PrintWriter pw = new PrintWriter(path);
-        System.out.println(path);
-        return pw;
-    }
+	static List<String> readLines(String path) {
+		boolean exists = Paths.get(path).toFile().exists();
+		ArrayList<String> ret = new ArrayList<>();
+
+		if (!exists) {
+			System.err.println(path + " not exists");
+			jCommander.usage();
+			return ret;
+		}
+		try {
+			return Files.lines(Paths.get(path)).collect(Collectors.<String>toList());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+
+	static String toProperty(String str) {
+		return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
+	}
+
+	static String toCap(String str) {
+		return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, str);
+	}
+
+	static String getShortTableName() {
+		return table.split("\\$")[1];
+	}
+
+	static String getShortCapTableName() {
+		return toCap(getShortTableName());
+	}
+
+	static PrintWriter getPrintWriter(String path) throws FileNotFoundException {
+		PrintWriter pw = new PrintWriter(path);
+		System.out.println(path);
+		return pw;
+	}
 
 }

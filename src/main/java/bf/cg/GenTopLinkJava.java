@@ -31,7 +31,7 @@ public class GenTopLinkJava {
 			pw.println(line);
 			if (currentColumn != null) {
 				if (line.contains(";")) {
-					String insertedText = String.format(template, currentColumn.toUpperCase(), Main.toProperty(currentColumn));
+					String insertedText = String.format(template, Main.toProperty(currentColumn));
 					pw.println(insertedText);
 					currentColumn = null;
 				}
