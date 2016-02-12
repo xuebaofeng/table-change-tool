@@ -61,7 +61,6 @@ public class Main {
 			}
 		}
 		table = option.table.toUpperCase();
-		table = table.replace("_", "$");
 		commonPath = option.commonPath;
 		String mainPath = option.mainPath;
 
