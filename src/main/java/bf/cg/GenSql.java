@@ -27,6 +27,12 @@ public class GenSql extends DbSupport {
 		String user = Main.getUsername();
 
 		String path = Main.getDdlPath();
+
+		if (Main.getCommonPath() == null) {
+			Main.usage();
+			return;
+		}
+
 		PrintWriter pw = Main.getPrintWriter(path);
 
 		final String[] addSql = {String.format("--liquibase formatted sql\n" +

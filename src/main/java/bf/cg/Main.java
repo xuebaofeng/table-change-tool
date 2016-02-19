@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
  */
 public class Main {
 
-
 	private static String table;
 	private static String ticket;
 	private static String username;
@@ -47,7 +46,6 @@ public class Main {
 	public static void init(String[] args) {
 		if (inited) return;
 
-
 		Option option = new Option();
 		jCommander = null;
 		try {
@@ -63,7 +61,6 @@ public class Main {
 		table = option.table.toUpperCase();
 		commonPath = option.commonPath;
 		String mainPath = option.mainPath;
-
 
 		baseDirServices = mainPath + "/lc-services";
 
@@ -87,7 +84,6 @@ public class Main {
 
 		inited = true;
 	}
-
 
 	public static String getTable() {
 		return table;
@@ -135,7 +131,9 @@ public class Main {
 	}
 
 	static String toProperty(String str) {
-		return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
+		String to = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
+		to = to.replace("Fname", "FName").replace("Mname", "MName").replace("Lname", "LName");
+		return to;
 	}
 
 	static String toCap(String str) {
@@ -154,6 +152,10 @@ public class Main {
 		PrintWriter pw = new PrintWriter(path);
 		System.out.println(path);
 		return pw;
+	}
+
+	static void usage() {
+		jCommander.usage();
 	}
 
 }

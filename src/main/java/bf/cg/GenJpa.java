@@ -15,6 +15,11 @@ public class GenJpa {
     public static void main(String[] args) throws Exception {
         Main.init(args);
 
+		if (Main.getCommonPath() == null) {
+			Main.usage();
+			return;
+		}
+
         String baseDir = Main.getCommonPath();
         String className = Main.getJpa();
         String[] columns = Main.getColumns().split(",");
