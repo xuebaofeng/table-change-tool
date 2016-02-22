@@ -28,6 +28,7 @@ public class Main {
 
 	private static boolean inited;
 	private static JCommander jCommander;
+	private static String mainPath;
 
 	public static void main(String[] args) throws Exception {
 		init(args);
@@ -60,18 +61,9 @@ public class Main {
 		}
 		table = option.table.toUpperCase();
 		commonPath = option.commonPath;
-		String mainPath = option.mainPath;
+		mainPath = option.mainPath;
 
 		baseDirServices = mainPath + "/lc-services";
-
-		boolean exists = Paths.get(baseDirServices).toFile().exists();
-		if (!exists) {
-			System.err.println(baseDirServices + " not exists");
-			if (jCommander != null) {
-				jCommander.usage();
-			}
-			System.exit(1);
-		}
 
 		jpa = option.jpa;
 		columns = option.columns.toUpperCase();
@@ -80,7 +72,7 @@ public class Main {
 		if (option.username != null)
 			username = option.username;
 
-		ddlPath = baseDirServices + "/db/lc/release111/schema_01_encryption_" + getShortTableName() + ".sql";
+		ddlPath = baseDirServices + "/db/lc/release112/schema_02_encryption_" + getShortTableName() + ".sql";
 
 		inited = true;
 	}
@@ -103,6 +95,10 @@ public class Main {
 
 	public static String getCommonPath() {
 		return commonPath;
+	}
+
+	public static String getMainPath() {
+		return mainPath;
 	}
 
 	public static String getJpa() {

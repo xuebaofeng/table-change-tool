@@ -13,7 +13,10 @@ public class GenTopLinkJava {
 
 	public static void main(String[] args) throws Exception {
 		Main.init(args);
-
+		if (Main.getMainPath() == null) {
+			Main.usage();
+			return;
+		}
 		String[] columns = Main.getColumns().split(",");
 
 		String inputFile = Main.getBaseDirServices() + String.format("/lc-main/src/main/java/lc/accessDB/tl/TL%s.java", Main.getShortCapTableName());

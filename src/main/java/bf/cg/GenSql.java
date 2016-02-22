@@ -28,7 +28,7 @@ public class GenSql extends DbSupport {
 
 		String path = Main.getDdlPath();
 
-		if (Main.getCommonPath() == null) {
+		if (Main.getCommonPath() == null || Main.getMainPath() == null) {
 			Main.usage();
 			return;
 		}
