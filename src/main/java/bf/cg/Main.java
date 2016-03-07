@@ -73,7 +73,7 @@ public class Main {
 		if (option.username != null)
 			username = option.username;
 
-		ddlPath = baseDirServices + "/db/lc/release113/schema_01_enc_" + getShortTableName() + ".sql";
+		ddlPath = baseDirServices + "/db/lc/schema_01_enc_" + getShortTableName() + ".sql";
 
 		inited = true;
 	}
