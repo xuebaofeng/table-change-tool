@@ -33,11 +33,12 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		init(args);
 
-		GenSql.main(args);
+		GenJpaSql.main(args);
 		GenJpa.main(args);
 		GenToplinkMap.main(args);
 		GenToplinkTable.main(args);
 		GenTopLinkJava.main(args);
+		GenTopLinkSql.main(args);
 	}
 
 	public static String getDdlPath() {
@@ -72,7 +73,7 @@ public class Main {
 		if (option.username != null)
 			username = option.username;
 
-		ddlPath = baseDirServices + "/db/lc/release112/schema_02_encryption_" + getShortTableName() + ".sql";
+		ddlPath = baseDirServices + "/db/lc/release113/schema_01_enc_" + getShortTableName() + ".sql";
 
 		inited = true;
 	}
