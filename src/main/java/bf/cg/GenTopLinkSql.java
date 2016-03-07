@@ -35,7 +35,6 @@ public class GenTopLinkSql extends SqlSupport {
 			"-- LMS-%s add encrypted columns for %s\n" +
 			"--============================================================================\n" +
 			"--changeset %s:LMS-%s_%s\n" +
-			"\n" +
 			"ALTER TABLE  %s ADD(", ticketId, tableName, user, ticketId, tableName, tableName)};
 
 		String[] columns = Main.getColumns().split(",");
