@@ -9,21 +9,19 @@ import java.util.List;
 public class GenJpa {
 
     static String template = "\n    @Column(name=\"%s_ENC\")\n" +
-            "    @LCEncryptionCiphertextField\n" +
-            "    private String %sEnc;";
+        "    @LCEncryptionCiphertextField\n" +
+        "    private String %sEnc;";
 
     public static void main(String[] args) throws Exception {
         Main.init(args);
 
-		if (Main.getCommonPath() == null) {
-			Main.usage();
-			return;
-		}
+        if (Main.getCommonPath() == null) {
+            return;
+        }
 
         String baseDir = Main.getCommonPath();
         String className = Main.getJpa();
         String[] columns = Main.getColumns().split(",");
-
 
         String inputFile = baseDir + String.format("/lc-dao/src/main/java/com/lendingclub/data/domain/jpa/%s.java", className);
         List<String> lines = Main.readLines(inputFile);
@@ -32,7 +30,8 @@ public class GenJpa {
 
         for (String line : lines) {
             for (String column : columns) {
-                if (line.contains("name=\"" + column.toUpperCase() + "\"")) {
+                if (line.contains("name") && line.contains(column.toUpperCase())) {
+
                     currentColumn = column;
                     pw.print("    @LCEncryptionCleartextField(EncryptionState.TRANSITIONAL)\n");
                 }

@@ -20,7 +20,6 @@ public class GenJpaSql extends SqlSupport {
 		String tableName = Main.getTable();
 
 		if (Main.getCommonPath() == null) {
-			Main.usage();
 			return;
 		}
 
