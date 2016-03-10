@@ -45,7 +45,7 @@ public class GenJpaSql extends SqlSupport {
 		String tableBegin = String.format("create table %s (", tableName1.toUpperCase());
 		boolean tableFound = false;
 		for (String line : lines1) {
-			if (line.contains(tableBegin)) {
+			if (line.contains(tableBegin) || line.contains(tableBegin.toUpperCase())) {
 				tableFound = true;
 			}
 

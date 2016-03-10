@@ -14,7 +14,6 @@ public class GenTopLinkJava {
 	public static void main(String[] args) throws Exception {
 		Main.init(args);
 		if (Main.getMainPath() == null) {
-			Main.usage();
 			return;
 		}
 		String[] columns = Main.getColumns().split(",");

@@ -73,7 +73,7 @@ public class Main {
 		if (option.username != null)
 			username = option.username;
 
-		ddlPath = baseDirServices + "/db/lc/schema_01_enc_" + getShortTableName() + ".sql";
+		ddlPath = baseDirServices + "/db/lc/schema_01_enc_" + getShortTableName().toLowerCase() + ".sql";
 
 		inited = true;
 	}
@@ -142,7 +142,7 @@ public class Main {
 	}
 
 	static String getShortCapTableName() {
-		return toCap(getShortTableName());
+		return toProperty(getShortTableName());
 	}
 
 	static PrintWriter getPrintWriter(String path) throws FileNotFoundException {
@@ -150,9 +150,4 @@ public class Main {
 		System.out.println(path);
 		return pw;
 	}
-
-	static void usage() {
-		jCommander.usage();
-	}
-
 }

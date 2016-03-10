@@ -17,7 +17,6 @@ public class GenToplinkMap {
         Main.init(args);
 
 		if (Main.getMainPath() == null) {
-			Main.usage();
 			return;
 		}
 

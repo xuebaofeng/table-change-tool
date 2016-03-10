@@ -24,7 +24,6 @@ public class GenTopLinkSql extends SqlSupport {
 		String path = Main.getDdlPath();
 
 		if (Main.getMainPath() == null) {
-			Main.usage();
 			return;
 		}
 
