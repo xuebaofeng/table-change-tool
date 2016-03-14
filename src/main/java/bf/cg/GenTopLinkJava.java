@@ -27,7 +27,7 @@ public class GenTopLinkJava {
 			for (String column : columns) {
 				if (line.contains(String.format(" %s;", Main.toProperty(column)))) {
 					currentColumn = column;
-					pw.print("  @LCEncryptionCleartextField(EncryptionState.TRANSITIONAL)\n");
+					pw.print("  @LCEncryptionCleartextField(LCEncryptionCleartextField.EncryptionState.TRANSITIONAL)\n");
 				}
 			}
 			pw.println(line);

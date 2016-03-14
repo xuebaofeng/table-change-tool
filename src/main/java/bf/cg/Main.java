@@ -129,7 +129,7 @@ public class Main {
 
 	static String toProperty(String str) {
 		String to = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
-		to = to.replace("Fname", "FName").replace("Mname", "MName").replace("Lname", "LName");
+//		to = to.replace("Fname", "FName").replace("Mname", "MName").replace("Lname", "LName");
 		return to;
 	}
 
