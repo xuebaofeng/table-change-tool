@@ -18,16 +18,8 @@ public class SqlSupport {
     static {
         BoneCPConfig config = new BoneCPConfig();
 
-        String env = "dev";
-        if ("dev".equals(env)) {
-            config.setJdbcUrl("jdbc:oracle:thin:@//lcdev.tlcinternal.com:1521/lcdev.lendingclub.com");
-        } else {
-            config.setJdbcUrl("jdbc:oracle:thin:@//lcscrubgg.tlcinternal.com:1521/LCSCRUBGG.lendingclub.com");
-        }
-
         dataSource = new BoneCPDataSource(config);
 
-        dataSource.setDriverClass("oracle.jdbc.OracleDriver");
     }
 
 
