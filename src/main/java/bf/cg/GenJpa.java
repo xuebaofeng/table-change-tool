@@ -33,7 +33,7 @@ public class GenJpa {
                 if (line.contains("name") && line.contains(column.toUpperCase())) {
 
                     currentColumn = column;
-                    pw.print("    @LCEncryptionCleartextField(EncryptionState.TRANSITIONAL)\n");
+                    pw.print("    @LCEncryptionCleartextField(LCEncryptionCleartextField.EncryptionState.TRANSITIONAL)\n");
                 }
             }
             pw.println(line);
