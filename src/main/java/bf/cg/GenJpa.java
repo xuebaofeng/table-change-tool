@@ -1,6 +1,7 @@
 package bf.cg;
 
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -24,6 +25,10 @@ public class GenJpa {
         String[] columns = Main.getColumns().split(",");
 
         String inputFile = baseDir + String.format("/lc-dao/src/main/java/com/lendingclub/data/domain/jpa/%s.java", className);
+        boolean exists = Paths.get(inputFile).toFile().exists();
+        if (!exists) {
+            inputFile = baseDir + String.format("/lc-dao/src/main/java/com/lendingclub/data/domain/jpa/collections/%s.java", className);
+        }
         List<String> lines = Main.readLines(inputFile);
         String currentColumn = null;
         PrintWriter pw = Main.getPrintWriter(inputFile + ".bak");
